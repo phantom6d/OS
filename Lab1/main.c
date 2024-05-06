@@ -105,13 +105,13 @@ int cmd_count() {
     return sizeof(commands)/sizeof(struct command);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
 
     char *in_pointer;
     size_t n;
     char *arr [20];
     char curr_path[256];
-    getcwd(curr_path,256);
+    realpath(argv[0], curr_path);
     setenv("shell", curr_path, 1);
 
     while (1) {

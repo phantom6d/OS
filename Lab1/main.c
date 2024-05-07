@@ -34,7 +34,7 @@ void cmd_clr(char **args) { // команда "clr" очищает экран.
     printf("\033c");
 }
 
-void cmd_dir(char **args) { // команда "dir" выводит используемую сейчас директорию.
+void cmd_dir(char **args) { // команда "dir" выводит содержимое указанной директории.
     if (args[1] == NULL) {
         printf("Usage: dir <directory>\n");
         return;

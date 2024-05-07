@@ -16,7 +16,7 @@ struct command commands[];
 int cmd_count();
 
 void cmd_cd(char **args) { // команда "cd" меняет нынешнюю директорию на указанную.
-    if (args[1] == NULL) { // если аргумент для смены директории отсутствует. вывести нынешную.
+    if (args[1] == NULL) { // если аргумент для смены директории отсутствует, вывести текущую.
         char path[256];
         getcwd(path,256);
         printf("%s\n", path);
@@ -49,7 +49,7 @@ void cmd_dir(char **args) { // команда "dir" выводит исполь�
         return;
     }
 
-    while ((entry = readdir(dir)) != NULL) { // вывод папок для полного пути
+    while ((entry = readdir(dir)) != NULL) { // полный обход указанной директории
         printf("%s\n", entry->d_name);
     }
 
@@ -90,7 +90,7 @@ void cmd_quit(char **args) { // команда "quit" завершает раб�
     exit(0);
 }
 
-struct command commands[] = { // массив из структур, содержащих в себе имя и помощь к команде.
+struct command commands[] = { // массив из структур, содержащих в себе имя, ссылку и помощь к команде.
         {"cd", "switch directory to <directory>, if its impossible due to lack of <directory>, output current one.", &cmd_cd},
         {"clr", "clear the screen", &cmd_clr},
         {"dir", "show all files in <directory>", &cmd_dir},
@@ -107,10 +107,10 @@ int cmd_count() { // высчитывает кол-во команд посре�
 
 int main(int argc, char *argv[]) { // основная функция
 
-    char *in_pointer;
-    size_t n;
-    char *arr [20];
-    char curr_path[256];
+    char *in_pointer; // указатель на строку
+    size_t n; // размер строки
+    char *arr [20]; // массив для аргументов
+    char curr_path[256]; // массив для хранения пути
     realpath(argv[0], curr_path);
     setenv("shell", curr_path, 1); // присвоить переменной shell значение истинного пути
 
@@ -118,7 +118,7 @@ int main(int argc, char *argv[]) { // основная функция
 
 
         in_pointer = NULL;
-        getcwd(curr_path,256);
+        getcwd(curr_path,256); // получение пути для вывода
         printf("%s > ", curr_path);
         getline(&in_pointer, &n, stdin); // ввод от пользователя
         arr[0] = strtok(in_pointer, " \n");

@@ -1,5 +1,5 @@
-#ifndef LAB2_QUICK_SORT_H
-#define LAB2_QUICK_SORT_H
+#ifndef LAB2_QUICK_SORT_BURST_H
+#define LAB2_QUICK_SORT_BURST_H
 #include "task.h"
 
 void swap(Task* a, Task* b)
@@ -43,4 +43,4 @@ void quick_sort(Task arr[], int left, int right)
     }
 }
 
-#endif //LAB2_QUICK_SORT_H
+#endif //LAB2_QUICK_SORT_BURST_H

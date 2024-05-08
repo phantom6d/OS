@@ -4,7 +4,7 @@
 #include "list.h"
 #include "cpu.h"
 #include "schedulers.h"
-#include "quick_sort.h"
+#include "quick_sort_burst.h"
 
 int task_cnt = 0;
 Task arr[100];

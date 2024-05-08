@@ -18,7 +18,7 @@ void add(char *name, int priority, int burst) {
 
 
 void schedule() {
-    quick_sort(arr, 0, task_cnt);
+    quick_sort(arr, 0, task_cnt - 1);
     while (task_cnt) {
         --task_cnt;
         run(&arr[task_cnt], arr[task_cnt].burst);

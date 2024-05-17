@@ -39,12 +39,10 @@ int read_file(struct page *curr_page) {
 }
 
 void insert_tlb(struct page *curr_page) {
-    if (tlb_length == 16) {
-        tlb_curr_id = (tlb_curr_id + 1) % 16;
-        tlb[tlb_curr_id] = *curr_page;
-        tlb_length--;
-    }
-    tlb[tlb_length++] = *curr_page;
+    tlb[tlb_curr_id] = *curr_page;
+    tlb_curr_id = (tlb_curr_id + 1) % 16;
+    if (tlb_length < 16)
+        tlb_length++;
 }
 
 int get_frame(struct page *curr_page) {
@@ -88,8 +86,6 @@ int main(int argc, char *argv[]) {
 
     inp = fopen(argv[1], "r");
     out = fopen("test_print.txt", "w");
-    backing_store = fopen("BACKING_STORE.bin", "rb");
-
     backing_store = fopen("BACKING_STORE.bin", "rb");
     if (backing_store == NULL) {
         printf("BACKING_STORE.bin reading error\n");

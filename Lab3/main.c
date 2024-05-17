@@ -42,6 +42,7 @@ void insert_tlb(struct page *curr_page) {
     if (tlb_length == 16) {
         tlb_curr_id = (tlb_curr_id + 1) % 16;
         tlb[tlb_curr_id] = *curr_page;
+        tlb_length--;
     }
     tlb[tlb_length++] = *curr_page;
 }
@@ -62,6 +63,7 @@ int get_frame(struct page *curr_page) {
     for (int i = 0; i < pages_length; ++i) {
         if (pages[i].page_n == curr_page->page_n) {
             curr_page->frame_n = pages[i].frame_n;
+            hit = 1;
             break;
         }
     }
@@ -77,14 +79,14 @@ int get_frame(struct page *curr_page) {
 
 struct page get_page(int log_address) {
     struct page curr_page;
-    curr_page.offset = log_address & 0xff;
-    curr_page.page_n = (log_address >> 8) & 0xff;
+    curr_page.offset = log_address & ((1 << 8) - 1);
+    curr_page.page_n = (log_address >> 8) & ((1 << 8) - 1);
     return curr_page;
 }
 
 int main(int argc, char *argv[]) {
 
-    inp = fopen("addresses.txt", "r");
+    inp = fopen(argv[1], "r");
     out = fopen("test_print.txt", "w");
     backing_store = fopen("BACKING_STORE.bin", "rb");
 
@@ -94,9 +96,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    if (inp == NULL) {
-        fprintf(stderr, "address.txt error");
-        return -1;
+    if (argc != 2 || !freopen(argv[1], "r", stdin)) {
+        printf("input reading error\n");
+        return 1;
     }
 
     int logical_add = 0;

@@ -17,29 +17,47 @@
 // the work queue
 task worktodo;
 
-// the worker bee
-pthread_t bee;
+// the worker bees (even though i would call them students during exams)
+pthread_t bees [NUMBER_OF_THREADS];
+//pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
+//sem_t sem;
+
+struct node *queue = NULL;
 
 // insert a task into the queue
 // returns 0 if successful or 1 otherwise, 
 int enqueue(task t) 
 {
-    return 0;
+    int ret = 0;
+
+    task *newTask = malloc(sizeof(task));
+    if (!newTask) {
+        ret = 1;
+        return ret;
+    }
+
+    newTask->function = t.function;
+    newTask->data = t.data;
+
+    insert(&queue, newTask);
+
+    return ret;
 }
 
 // remove a task from the queue
 task dequeue() 
 {
+    delete(&queue, queue->t);
     return worktodo;
 }
 
 // the worker thread in the thread pool
 void *worker(void *param)
 {
-    // execute the task
-    execute(worktodo.function, worktodo.data);
-
-    pthread_exit(0);
+    while (queue != NULL) {
+        execute(queue->t->function, queue->t->data);
+        dequeue();
+    }
 }
 
 /**
@@ -55,20 +73,27 @@ void execute(void (*somefunction)(void *p), void *p)
  */
 int pool_submit(void (*somefunction)(void *p), void *p)
 {
+    int ret = 0;
+
     worktodo.function = somefunction;
     worktodo.data = p;
+    ret = enqueue(worktodo);
 
-    return 0;
+    return ret;
 }
 
 // initialize the thread pool
 void pool_init(void)
 {
-    pthread_create(&bee,NULL,worker,NULL);
+    for (int th = 0; th < NUMBER_OF_THREADS; ++th) {
+        pthread_create(&bees[th],NULL,worker,NULL);
+    }
 }
 
 // shutdown the thread pool
 void pool_shutdown(void)
 {
-    pthread_join(bee,NULL);
+    for (int th = 0; th < NUMBER_OF_THREADS; ++th) {
+        pthread_join(bees[th],NULL);
+    }
 }
